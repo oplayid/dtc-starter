@@ -5,12 +5,12 @@ loadEnv(process.env.NODE_ENV || 'development', process.cwd())
 module.exports = defineConfig({
   projectConfig: {
     databaseUrl: process.env.DATABASE_URL,
-    // Tambahan agar tidak terjadi error SSL saat koneksi ke PostgreSQL lokal Docker
+    // Agar tidak terjadi error SSL saat koneksi ke PostgreSQL lokal Docker
     databaseDriverOptions: {
       ssl: false,
       sslmode: "disable",
     },
-    // Tambahan untuk koneksi Redis
+    // Koneksi Redis
     redisUrl: process.env.REDIS_URL,
     http: {
       storeCors: process.env.STORE_CORS!,
@@ -20,13 +20,18 @@ module.exports = defineConfig({
       cookieSecret: process.env.COOKIE_SECRET,
     }
   },
-  // Tambahan konfigurasi Vite HMR agar Medusa Admin berjalan normal di dalam Docker
+  // Konfigurasi Vite HMR & Host agar Medusa Admin bisa diakses via domain publik di Dokploy
   admin: {
     vite: (config) => {
       return {
         server: {
           host: "0.0.0.0",
-          allowedHosts: true, // <--- Ubah menjadi true agar mengizinkan semua host di balik proxy
+          allowedHosts: [
+            "admin.oplay.id",
+            "localhost",
+            "127.0.0.1",
+            ".oplay.id"
+          ],
           hmr: {
             port: 5173,
             clientPort: 5173,

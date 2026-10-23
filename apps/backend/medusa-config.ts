@@ -30,6 +30,7 @@ module.exports = defineConfig({
             "localhost",
             ".localhost",
             "127.0.0.1",
+            "admin.oplay.id",
           ],
           hmr: {
             port: 5173,

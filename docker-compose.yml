@@ -53,7 +53,7 @@ services:
       - NEXT_PUBLIC_MEDUSA_BACKEND_URL=http://medusa:9000
     env_file:
       - apps/storefront/.env
-    entrypoint: ["./start-storefront.sh"]
+    entrypoint: ["sh", "./start-storefront.sh"]
     networks:
       - medusa_network
 

@@ -4,8 +4,5 @@ cd /server/apps/backend
 echo "Running database migrations..."
 pnpm medusa db:migrate
 
-echo "Seeding database..."
-pnpm seed || echo "Seeding failed, continuing..."
-
-echo "Starting Medusa production server..."
-pnpm start
+echo "Starting Medusa backend..."
+pnpm dev

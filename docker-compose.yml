@@ -37,6 +37,7 @@ services:
       - REDIS_URL=redis://redis:6379
     env_file:
       - apps/backend/.env
+    entrypoint: ["sh", "./start.sh"]
     networks:
       - medusa_network
 

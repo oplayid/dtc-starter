@@ -1,0 +1,70 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: oplay_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: medusa-store
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - oplay_net
+
+  redis:
+    image: redis:7-alpine
+    container_name: oplay_redis
+    restart: unless-stopped
+    networks:
+      - oplay_net
+
+  backend:
+    build:
+      context: .
+      dockerfile: apps/backend/Dockerfile
+    container_name: oplay_backend
+    restart: unless-stopped
+    depends_on:
+      - postgres
+      - redis
+    ports:
+      - "9000:9000"
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgres://postgres:postgres@postgres:5432/medusa-store
+      - REDIS_URL=redis://redis:6379
+      - STORE_CORS=http://localhost:8000,https://store.oplay.id
+      - ADMIN_CORS=http://localhost:9000,https://admin.oplay.id
+      - AUTH_CORS=http://localhost:9000,https://admin.oplay.id
+      - JWT_SECRET=supersecret
+      - COOKIE_SECRET=supersecret
+    networks:
+      - oplay_net
+
+  storefront:
+    build:
+      context: .
+      dockerfile: apps/storefront/Dockerfile
+    container_name: oplay_storefront
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "8000:8000"
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_MEDUSA_BACKEND_URL=https://admin.oplay.id
+      - NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY=pk_masukkan_key_asli_anda_disini
+      - NEXT_PUBLIC_BASE_URL=https://store.oplay.id
+    networks:
+      - oplay_net
+
+volumes:
+  postgres_data:
+
+networks:
+  oplay_net:
+    driver: bridge

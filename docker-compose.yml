@@ -28,9 +28,10 @@ services:
     depends_on:
       - postgres
       - redis
-    ports:
-      - "9000:9000"
-      - "5173:5173"
+    # Port host dihapus, Traefik Dokploy otomatis membaca port internal 9000
+    expose:
+      - "9000"
+      - "5173"
     environment:
       - NODE_ENV=development
       - DATABASE_URL=postgres://postgres:postgres@postgres:5432/medusa-store
@@ -47,10 +48,12 @@ services:
     restart: unless-stopped
     depends_on:
       - medusa
-    ports:
-      - "8000:8000"
+    # Port host dihapus, Traefik Dokploy otomatis membaca port internal 8000
+    expose:
+      - "8000"
     environment:
       - NEXT_PUBLIC_MEDUSA_BACKEND_URL=http://medusa:9000
+      - NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY=pk_masukkan_key_anda_disini
     env_file:
       - apps/storefront/.env
     entrypoint: ["sh", "./start-storefront.sh"]

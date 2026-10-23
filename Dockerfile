@@ -11,6 +11,9 @@ RUN pnpm install --frozen-lockfile
 
 COPY . .
 
+# WAJIB: Build project agar file produksi backend & storefront siap
+RUN pnpm build
+
 RUN chmod +x start.sh start-storefront.sh
 
 EXPOSE 9000 5173 8000
